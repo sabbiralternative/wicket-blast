@@ -1,84 +1,117 @@
+import { useState } from "react";
 import "./Home.css";
+import Navbar from "./Navbar";
+import Settings from "./Settings";
+import { LiaTableSolid } from "react-icons/lia";
+import Boxes from "./Boxes";
+import GameHistory from "./GameHistory";
+import { useOrderMutation } from "../../redux/features/events/events";
+import { generateRoundId } from "../../utils/generateRoundId";
+
 const Home = () => {
+  const [showSetting, setShowSetting] = useState(false);
+  const [activeTurbo, setActiveTurbo] = useState(false);
+  const [startGame, setStartGame] = useState(false);
+  const [boxGrid, setBoxGrid] = useState(3);
+  const [addOrder] = useOrderMutation();
+
+  //   const handlePlaceBet = async () => {
+  //   if (stake) {
+
+  //     setBoxes(() => {
+  //       return boxArray;
+  //     });
+  //     setSelectLevelData(() => {
+  //       return data;
+  //     });
+  //     const round_id = generateRoundId();
+  //     sessionStorage.removeItem("round_id");
+  //     sessionStorage.setItem("round_id", round_id);
+
+  //     const payload = [
+  //       {
+  //         eventId: 20004,
+  //         eventName: "Tower Legend",
+  //         isback: 0,
+  //         stake,
+  //         type: "bet",
+  //         round_id,
+  //       },
+  //     ];
+
+  //     const res = await addOrder(payload).unwrap();
+  //     // console.log(res);
+  //     if (res?.success) {
+  //       setDisableCashOutRandom(false);
+  //       setIsBetPlaced(true);
+  //       setTimeout(() => {
+  //         let recentResult = [];
+  //         const recentStoredResult = localStorage.getItem("recentResult");
+  //         if (recentStoredResult) {
+  //           recentResult = JSON.parse(recentStoredResult);
+  //         }
+  //         //push
+  //         localStorage.setItem("recentResult", JSON.stringify(recentResult));
+  //       }, 500);
+  //     } else {
+  //       const firstNonBorderObj = data.find(
+  //         (item) => item.border === false && item.isSelected === false
+  //       );
+
+  //       const addBorderToLevelData = data.map((item) => ({
+  //         ...item,
+  //         border: firstNonBorderObj.id === item.id ? true : item.border,
+  //         isSelected: firstNonBorderObj.id === item.id ? true : item.border,
+  //       }));
+  //       setSelectLevelData(addBorderToLevelData);
+
+  //       setBoxes((prevBoxes) => {
+  //         const updatedBoxes = [...prevBoxes]; // copy of state
+  //         const falseIndexes = [];
+
+  //         // Find all indexes where clickable === false
+  //         for (let i = updatedBoxes.length - 1; i >= 0; i--) {
+  //           if (!updatedBoxes[i].clickable && !updatedBoxes[i].isSelected) {
+  //             falseIndexes.push(i);
+  //           }
+  //         }
+
+  //         // If at least 3 non-clickable items exist
+  //         if (falseIndexes.length >= clickableBoxForLevel[selectLevel]) {
+  //           // Take the *last* 3 (from the end of the array, i.e. the first 3 in falseIndexes array)
+  //           const indexesToUpdate = falseIndexes.slice(
+  //             0,
+  //             clickableBoxForLevel[selectLevel]
+  //           );
+
+  //           indexesToUpdate.forEach((i) => {
+  //             updatedBoxes[i] = {
+  //               ...updatedBoxes[i],
+  //               clickable: true, // or any other modification
+  //             };
+  //           });
+  //         }
+
+  //         return updatedBoxes;
+  //       });
+  //       setDisableCashOutRandom(false);
+  //       setIsBetPlaced(true);
+  //       toast.error(res?.Message);
+  //     }
+  //   } else {
+  //     toast.error("Amount is required");
+  //   }
+  // };
   return (
     <div id="app">
-      <div
-        id="ModuleLayoutDiv"
-        style={{
-          position: "fixed",
-          zIndex: 1000,
-          left: "0px",
-          top: "0px",
-          width: "100%",
-          height: "40px",
-          background:
-            "linear-gradient(rgba(34, 34, 34, 0.5) 0%, rgba(34, 34, 34, 0) 100%)",
-        }}
-      />
-      <div className="demo--Ig8fs">
-        <div className="demoIcon--ozzEI" />
-        <div>Demo Mode</div>
-      </div>
-      <div
-        data-track="balance"
-        className="balance--Kjiqa"
-        style={{ position: "fixed", zIndex: 1000, left: "8px", top: "8px" }}
-      >
-        <div className="balanceTitle--JnSFJ">Balance:</div>
-        <i className="fm-iconFont fm-iconFont-ios-creditcard" />$
-        <span className="balanceSum--_ab3Z">997.53</span>
-      </div>
-      <div
-        className="name--TP6Ls"
-        style={{ position: "fixed", zIndex: 1000, left: "8px", bottom: "0px" }}
-      >
-        Turbo Games • Wicket Blast
-      </div>
-      <div
-        style={{ position: "fixed", zIndex: 1000, right: "8px", bottom: "0px" }}
-      >
-        <div className="time--tHxDp">24 Jun, 2025 | 12:45:39</div>
-      </div>
-      <div
-        id
-        style={{
-          position: "fixed",
-          zIndex: 1000,
-          right: "0px",
-          top: "68px",
-          display: "flex",
-          flexDirection: "column",
-          width: "100%",
-          pointerEvents: "none",
-        }}
-      />
-      <div
-        id
-        style={{
-          position: "fixed",
-          zIndex: 1000,
-          right: "8px",
-          top: "8px",
-          display: "flex",
-          flexDirection: "row-reverse",
-          alignItems: "center",
-        }}
-      >
-        <div data-track="settings" className="icon--k9yLr">
-          <i className="fm-iconFont fm-iconFont-ios-nav" />
-        </div>
-        <div className="icon--k9yLr" style={{ marginRight: "8px" }}>
-          <i className="fm-iconFont fm-iconFont-ios-music-on" />
-        </div>
-        <div
-          data-track="universe"
-          className="icon--k9yLr"
-          style={{ marginRight: "8px" }}
-        >
-          <span className="iconActiveIndicator--CMTO4" />
-          <div className="iconTurboUniverse--Of1Ih" />
-        </div>
-      </div>
+      {showSetting && (
+        <Settings
+          boxGrid={boxGrid}
+          setBoxGrid={setBoxGrid}
+          setShowSetting={setShowSetting}
+        />
+      )}
+      <Navbar />
       <div id="observeElementTree" className="wrap">
         <div className="bg" />
         <div className="inner" style={{ width: "300px" }}>
@@ -89,7 +122,7 @@ const Home = () => {
                 <div className="header-stat__inner">
                   <div className="header-stat__item">
                     <div className="header-stat__icon">
-                      <i className="fm-iconFont fm-iconFont-plates" />
+                      <LiaTableSolid />
                     </div>
                     <div className="header-stat__value">5x5</div>
                   </div>
@@ -104,214 +137,8 @@ const Home = () => {
             </div>
           </div>
           <div className="game">
-            <div className="game__inner">
-              <div className="game__box">
-                <div className="game__grid _5x5">
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                  <div className="game-item _disabled">
-                    <div className="game-item__inner">
-                      <div className="game-item__sum">$1.08</div>
-                    </div>
-                    <div className="game-item__shadow" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="game__history">
-              <div className="history">
-                <div className="history__inner">
-                  <div className="history__item _blue">x1.08</div>
-                  <div className="history__item _blue">x1.23</div>
-                  <div className="history__item _blue">x1.42</div>
-                  <div className="history__item _blue">x1.64</div>
-                  <div className="history__item _blue">x1.92</div>
-                  <div className="history__item _blue _green">x2.25</div>
-                  <div className="history__item _blue _green">x2.68</div>
-                  <div className="history__item _shadow _blue _green">
-                    x3.21
-                  </div>
-                  <div className="history__item _shadow _blue _green">x3.9</div>
-                  <div className="history__item _shadow _blue _green">x4.8</div>
-                  <div className="history__item _shadow _blue _green">x6</div>
-                  <div className="history__item _shadow _blue _green">
-                    x7.64
-                  </div>
-                  <div className="history__item _shadow _blue _green">
-                    x9.93
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x13.24
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x18.21
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x26.01
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x39.02
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x62.43
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x109.25
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x218.5
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x546.25
-                  </div>
-                  <div className="history__item _shadow _blue _green _orange">
-                    x2.18k
-                  </div>
-                </div>
-              </div>
-            </div>
+            <Boxes boxGrid={boxGrid} activeTurbo={activeTurbo} />
+            <GameHistory />
           </div>
           <div className="control-portrait">
             <div className="control-portrait__amount">
@@ -368,26 +195,51 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div className="control-portrait__toggle">
-              <div className="control-portrait-toggle">
+            <div
+              className="control-portrait__toggle "
+              onClick={() => setActiveTurbo((prev) => !prev)}
+            >
+              <div
+                className={`control-portrait-toggle ${
+                  activeTurbo ? "_active" : ""
+                }`}
+              >
                 <div className="control-portrait-toggle__inner">
                   <div className="control-portrait-toggle__title">Turbo</div>
                   <div className="control-portrait-toggle__btn" />
                 </div>
               </div>
             </div>
-            <div className="control-portrait__button">
-              <div className="control-portrait-button _orange">
-                <div className="control-portrait-button__inner">
-                  <div className="control-portrait-button__content">
-                    <span className="control-portrait-button__text">
-                      Start Game
-                    </span>
+            <div
+              className="control-portrait__button"
+              onClick={() => setStartGame((prev) => !prev)}
+            >
+              {startGame ? (
+                <div className="control-portrait-button _black">
+                  <div className="control-portrait-button__inner">
+                    <div className="control-portrait-button__content">
+                      <span className="control-portrait-button__text">
+                        Cancel
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <div className="control-portrait-button _orange">
+                  <div className="control-portrait-button__inner">
+                    <div className="control-portrait-button__content">
+                      <span className="control-portrait-button__text">
+                        Start Game
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="control-portrait__setting">
+            <div
+              onClick={() => setShowSetting(true)}
+              className="control-portrait__setting"
+            >
               <div className="control-portrait-setting">
                 <div className="control-portrait-setting__inner">
                   <span />
