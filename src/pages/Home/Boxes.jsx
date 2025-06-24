@@ -1,32 +1,52 @@
-const Boxes = ({ boxGrid, activeTurbo }) => {
-  const boxes = {
-    3: 9,
-    5: 20,
-    7: 49,
-    9: 81,
+const Boxes = ({
+  boxGrid,
+  activeTurbo,
+  boxData,
+  isBetPlaced,
+  setBoxData,
+  setIsBetPlaced,
+}) => {
+  const handleBoxClick = async (box) => {
+    console.log(box);
+    if (isBetPlaced) {
+      if (box.mine) {
+        const updatedBoxes = boxData?.map((boxObj) => ({
+          ...boxObj,
+          roundEnd: true,
+          win: boxObj?.mine ? false : true,
+        }));
+        setBoxData(updatedBoxes);
+        setIsBetPlaced(false);
+      } else {
+        const updatedBoxes = boxData?.map((boxObj) =>
+          box?.id === boxObj.id
+            ? {
+                ...boxObj,
+                win: true,
+              }
+            : boxObj
+        );
+        setBoxData(updatedBoxes);
+      }
+    }
   };
-
-  const boxArray = Array.from({ length: boxes[boxGrid] }, (_, i) => ({
-    name: `box${i + 1}`,
-    clickable: false,
-    id: i + 1,
-    win: false,
-    roundEnd: false,
-  }));
-
   return (
     <div className="game__inner">
       <div className="game__box">
         <div className={`game__grid _${boxGrid}x${boxGrid}`}>
-          {boxArray.map((box) => {
+          {boxData.map((box, i) => {
+            console.log(box);
             return (
               <div
-                key={box}
-                className={` game-item ${
-                  activeTurbo ? "_turbo" : "_disabled"
-                } ${box?.win ? "game-item-win _blue" : ""}`}
+                onClick={() => handleBoxClick(box)}
+                key={i}
+                className={` game-item 
+                  ${activeTurbo ? "_turbo" : ""} 
+                  ${box?.win ? "game-item-win _blue" : " "}
+                ${isBetPlaced ? "" : "_disabled"} 
+                ${box?.mine && box?.roundEnd ? "game-item-lose" : ""} `}
               >
-                {!box.win && (
+                {!box.win && !box?.roundEnd && (
                   <>
                     <div className="game-item__inner">
                       <div className="game-item__sum">$1.08</div>

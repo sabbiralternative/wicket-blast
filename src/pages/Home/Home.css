@@ -152,9 +152,9 @@ template {
   --font-family: "Gilroy", sans-serif;
   --font-family-f1: "Gilroy", sans-serif;
 }
-:root {
+/* :root {
   font-size: 16px;
-}
+} */
 *,
 *::before,
 *::after {

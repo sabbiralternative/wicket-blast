@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Home.css";
 import Navbar from "./Navbar";
 import Settings from "./Settings";
@@ -7,105 +7,142 @@ import Boxes from "./Boxes";
 import GameHistory from "./GameHistory";
 import { useOrderMutation } from "../../redux/features/events/events";
 import { generateRoundId } from "../../utils/generateRoundId";
+import toast from "react-hot-toast";
+
+const wicketData = {
+  3: [2, 3, 5, 7],
+  5: [3, 5, 7, 10],
+  7: [5, 7, 10, 12],
+  9: [10, 12, 15, 20],
+};
+
+const boxes = {
+  3: 9,
+  5: 20,
+  7: 49,
+  9: 81,
+};
 
 const Home = () => {
   const [showSetting, setShowSetting] = useState(false);
   const [activeTurbo, setActiveTurbo] = useState(false);
-  const [startGame, setStartGame] = useState(false);
   const [boxGrid, setBoxGrid] = useState(3);
   const [addOrder] = useOrderMutation();
+  const [isBetPlaced, setIsBetPlaced] = useState(false);
+  const [wicket, setWicket] = useState(wicketData?.[boxGrid]?.[0]);
+  const [betAmount, setBetAmount] = useState(100);
+  const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const initialBoxData = Array.from({ length: boxes[boxGrid] }, (_, i) => ({
+    name: `box${i + 1}`,
+    id: i + 1,
+    mine: (i + 1) % boxGrid === 0,
+    win: false,
+    roundEnd: false,
+  }));
+  const [boxData, setBoxData] = useState(initialBoxData);
+  const isSingleBoxWin = boxData?.some((box) => box.win);
 
-  //   const handlePlaceBet = async () => {
-  //   if (stake) {
+  const handlePlaceBet = async () => {
+    if (betAmount) {
+      const round_id = generateRoundId();
+      sessionStorage.removeItem("round_id");
+      sessionStorage.setItem("round_id", round_id);
 
-  //     setBoxes(() => {
-  //       return boxArray;
-  //     });
-  //     setSelectLevelData(() => {
-  //       return data;
-  //     });
-  //     const round_id = generateRoundId();
-  //     sessionStorage.removeItem("round_id");
-  //     sessionStorage.setItem("round_id", round_id);
+      const payload = [
+        {
+          eventId: 20004,
+          eventName: "Wicket Blast",
+          isback: 0,
+          stake: betAmount,
+          type: "bet",
+          round_id,
+        },
+      ];
 
-  //     const payload = [
-  //       {
-  //         eventId: 20004,
-  //         eventName: "Tower Legend",
-  //         isback: 0,
-  //         stake,
-  //         type: "bet",
-  //         round_id,
-  //       },
-  //     ];
+      const res = await addOrder(payload).unwrap();
+      setBoxData(initialBoxData);
+      if (res?.success) {
+        setIsBetPlaced(true);
+        setTimeout(() => {
+          let recentResult = [];
+          const recentStoredResult = localStorage.getItem("recentResult");
+          if (recentStoredResult) {
+            recentResult = JSON.parse(recentStoredResult);
+          }
+          //push
+          localStorage.setItem("recentResult", JSON.stringify(recentResult));
+        }, 500);
+      } else {
+        setIsBetPlaced(true);
+        toast.error(res?.Message);
+      }
+    } else {
+      toast.error("Amount is required");
+    }
+  };
 
-  //     const res = await addOrder(payload).unwrap();
-  //     // console.log(res);
-  //     if (res?.success) {
-  //       setDisableCashOutRandom(false);
-  //       setIsBetPlaced(true);
-  //       setTimeout(() => {
-  //         let recentResult = [];
-  //         const recentStoredResult = localStorage.getItem("recentResult");
-  //         if (recentStoredResult) {
-  //           recentResult = JSON.parse(recentStoredResult);
-  //         }
-  //         //push
-  //         localStorage.setItem("recentResult", JSON.stringify(recentResult));
-  //       }, 500);
-  //     } else {
-  //       const firstNonBorderObj = data.find(
-  //         (item) => item.border === false && item.isSelected === false
-  //       );
+  useEffect(() => {
+    setWicket(wicketData?.[boxGrid]?.[0]);
+    setBoxData(initialBoxData);
+  }, [boxGrid]);
 
-  //       const addBorderToLevelData = data.map((item) => ({
-  //         ...item,
-  //         border: firstNonBorderObj.id === item.id ? true : item.border,
-  //         isSelected: firstNonBorderObj.id === item.id ? true : item.border,
-  //       }));
-  //       setSelectLevelData(addBorderToLevelData);
+  useEffect(() => {
+    const handleResize = () => {
+      setDeviceWidth(window.innerWidth);
+    };
 
-  //       setBoxes((prevBoxes) => {
-  //         const updatedBoxes = [...prevBoxes]; // copy of state
-  //         const falseIndexes = [];
+    handleResize();
 
-  //         // Find all indexes where clickable === false
-  //         for (let i = updatedBoxes.length - 1; i >= 0; i--) {
-  //           if (!updatedBoxes[i].clickable && !updatedBoxes[i].isSelected) {
-  //             falseIndexes.push(i);
-  //           }
-  //         }
+    window.addEventListener("resize", handleResize);
 
-  //         // If at least 3 non-clickable items exist
-  //         if (falseIndexes.length >= clickableBoxForLevel[selectLevel]) {
-  //           // Take the *last* 3 (from the end of the array, i.e. the first 3 in falseIndexes array)
-  //           const indexesToUpdate = falseIndexes.slice(
-  //             0,
-  //             clickableBoxForLevel[selectLevel]
-  //           );
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
-  //           indexesToUpdate.forEach((i) => {
-  //             updatedBoxes[i] = {
-  //               ...updatedBoxes[i],
-  //               clickable: true, // or any other modification
-  //             };
-  //           });
-  //         }
+  const handleChangeBetAmount = (type) => {
+    if (type === "minus") {
+      if (betAmount > 0 && betAmount <= 100) {
+        setBetAmount((prev) => Math.max(prev - 10, 0));
+      } else if (betAmount > 100 && betAmount <= 1000) {
+        setBetAmount((prev) => Math.max(prev - 100, 0));
+      } else if (betAmount > 1000) {
+        setBetAmount((prev) => Math.max(prev - 500, 0));
+      }
+    }
+    if (type === "plus") {
+      if (betAmount >= 0 && betAmount < 100) {
+        setBetAmount((prev) => prev + 10);
+      } else if (betAmount >= 100 && betAmount < 1000) {
+        setBetAmount((prev) => prev + 100);
+      } else if (betAmount >= 1000) {
+        setBetAmount((prev) => prev + 500);
+      }
+    }
+  };
 
-  //         return updatedBoxes;
-  //       });
-  //       setDisableCashOutRandom(false);
-  //       setIsBetPlaced(true);
-  //       toast.error(res?.Message);
-  //     }
-  //   } else {
-  //     toast.error("Amount is required");
-  //   }
-  // };
+  const handleCashOut = async () => {
+    const findBoxAndChange = boxData?.map((boxObj) => ({
+      ...boxObj,
+      win: boxObj?.mine ? false : true,
+      roundEnd: true,
+    }));
+
+    setBoxData(findBoxAndChange);
+
+    setIsBetPlaced(false);
+  };
+
   return (
     <div id="app">
       {showSetting && (
         <Settings
+          handleChangeBetAmount={handleChangeBetAmount}
+          betAmount={betAmount}
+          setBetAmount={setBetAmount}
+          setWicket={setWicket}
+          wicket={wicket}
+          wicketData={wicketData}
           boxGrid={boxGrid}
           setBoxGrid={setBoxGrid}
           setShowSetting={setShowSetting}
@@ -114,7 +151,7 @@ const Home = () => {
       <Navbar />
       <div id="observeElementTree" className="wrap">
         <div className="bg" />
-        <div className="inner" style={{ width: "300px" }}>
+        <div className="inner" style={{ width: `${deviceWidth}px` }}>
           <div className="header">
             <div className="header__logo" />
             <div className="header__history">
@@ -137,7 +174,14 @@ const Home = () => {
             </div>
           </div>
           <div className="game">
-            <Boxes boxGrid={boxGrid} activeTurbo={activeTurbo} />
+            <Boxes
+              isBetPlaced={isBetPlaced}
+              setIsBetPlaced={setIsBetPlaced}
+              setBoxData={setBoxData}
+              boxData={boxData}
+              boxGrid={boxGrid}
+              activeTurbo={activeTurbo}
+            />
             <GameHistory />
           </div>
           <div className="control-portrait">
@@ -170,8 +214,16 @@ const Home = () => {
                   />
                   <div className="amount-btns">
                     <div className="amount-btns__inner">
-                      <div className="amount-btns__left">min</div>
-                      <div className="amount-btns__right _font20 _pr1 _pb1">
+                      <div
+                        onClick={() => setBetAmount(10)}
+                        className="amount-btns__left"
+                      >
+                        min
+                      </div>
+                      <div
+                        onClick={() => handleChangeBetAmount("minus")}
+                        className="amount-btns__right _font20 _pr1 _pb1"
+                      >
                         -
                       </div>
                     </div>
@@ -183,20 +235,32 @@ const Home = () => {
                       inputMode="decimal"
                       autoComplete="off"
                       spellCheck="false"
-                      tabIndex={-1}
+                      value={betAmount}
                     />
                   </div>
                   <div className="amount-btns _right">
                     <div className="amount-btns__inner">
-                      <div className="amount-btns__left _font20 _pl1">+</div>
-                      <div className="amount-btns__right">max</div>
+                      <div
+                        onClick={() => handleChangeBetAmount("plus")}
+                        className="amount-btns__left _font20 _pl1"
+                      >
+                        +
+                      </div>
+                      <div
+                        onClick={() => setBetAmount(10000)}
+                        className="amount-btns__right"
+                      >
+                        max
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div
-              className="control-portrait__toggle "
+              className={`control-portrait__toggle  ${
+                isBetPlaced ? "pointer-events-none" : ""
+              }`}
               onClick={() => setActiveTurbo((prev) => !prev)}
             >
               <div
@@ -210,21 +274,32 @@ const Home = () => {
                 </div>
               </div>
             </div>
-            <div
-              className="control-portrait__button"
-              onClick={() => setStartGame((prev) => !prev)}
-            >
-              {startGame ? (
-                <div className="control-portrait-button _black">
+
+            {isBetPlaced ? (
+              <div
+                onClick={handleCashOut}
+                className={`control-portrait__button ${
+                  isSingleBoxWin ? "" : "pointer-events-none opacity-50"
+                }`}
+              >
+                <div className="control-portrait-button _blue">
                   <div className="control-portrait-button__inner">
                     <div className="control-portrait-button__content">
                       <span className="control-portrait-button__text">
-                        Cancel
+                        Cash Out
+                      </span>
+                      <span className="control-portrait-button__sum">
+                        {betAmount}
                       </span>
                     </div>
                   </div>
                 </div>
-              ) : (
+              </div>
+            ) : (
+              <div
+                className="control-portrait__button"
+                onClick={handlePlaceBet}
+              >
                 <div className="control-portrait-button _orange">
                   <div className="control-portrait-button__inner">
                     <div className="control-portrait-button__content">
@@ -234,11 +309,14 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
+              </div>
+            )}
+
             <div
               onClick={() => setShowSetting(true)}
-              className="control-portrait__setting"
+              className={`control-portrait__setting ${
+                isBetPlaced ? "pointer-events-none" : ""
+              }`}
             >
               <div className="control-portrait-setting">
                 <div className="control-portrait-setting__inner">

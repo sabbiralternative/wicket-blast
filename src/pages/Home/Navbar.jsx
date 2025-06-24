@@ -53,7 +53,6 @@ const Navbar = () => {
         <div className="time--tHxDp">24 Jun, 2025 | 12:45:39</div>
       </div>
       <div
-        id
         style={{
           position: "fixed",
           zIndex: 1000,
@@ -66,7 +65,6 @@ const Navbar = () => {
         }}
       />
       <div
-        id
         style={{
           position: "fixed",
           zIndex: 1000,

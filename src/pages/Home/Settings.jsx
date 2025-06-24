@@ -1,26 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { IoIosClose } from "react-icons/io";
 import useCloseModalClickOutside from "../../hooks/closeModal";
 
-const wicketData = {
-  3: [2, 3, 5, 7],
-  5: [3, 5, 7, 10],
-  7: [5, 7, 10, 12],
-  9: [10, 12, 15, 20],
-};
-
-const Settings = ({ setShowSetting, setBoxGrid, boxGrid }) => {
+const Settings = ({
+  setShowSetting,
+  setBoxGrid,
+  boxGrid,
+  wicket,
+  setWicket,
+  betAmount,
+  setBetAmount,
+  wicketData,
+  handleChangeBetAmount,
+}) => {
   const ref = useRef();
   useCloseModalClickOutside(ref, () => {
     setShowSetting(false);
   });
-
-  const [wicket, setWicket] = useState(wicketData?.[boxGrid]?.[0]);
-  const [betAmount, setBetAmount] = useState(0.1);
-
-  useEffect(() => {
-    setWicket(wicketData?.[boxGrid]?.[0]);
-  }, [boxGrid]);
 
   const handleDecreaseWicket = (type) => {
     if (type === "minus") {
@@ -31,22 +27,6 @@ const Settings = ({ setShowSetting, setBoxGrid, boxGrid }) => {
       }
     } else {
       setWicket((prev) => prev + 1);
-    }
-  };
-
-  const handleDecreaseBetAmount = () => {
-    if (betAmount > 1) {
-      setBetAmount((prev) => prev - 1);
-    } else if (betAmount > 0.1) {
-      setBetAmount((prev) => Math.max((prev - 0.1).toFixed(1), 0.1));
-    }
-  };
-
-  const handleIncreaseBetAmount = () => {
-    if (betAmount >= 1) {
-      setBetAmount((prev) => prev + 1);
-    } else {
-      setBetAmount((prev) => Math.min(parseFloat((prev + 0.1).toFixed(1)), 1));
     }
   };
 
@@ -189,13 +169,13 @@ const Settings = ({ setShowSetting, setBoxGrid, boxGrid }) => {
             <div className="control-portrait-modal-btn-group _w100">
               <div className="control-portrait-modal-btn-group__inner">
                 <div
-                  onClick={handleDecreaseBetAmount}
+                  onClick={() => handleChangeBetAmount("minus")}
                   className="control-portrait-modal-btn-group__btn _font20 _pl1"
                 >
                   -
                 </div>
                 <div
-                  onClick={handleIncreaseBetAmount}
+                  onClick={() => handleChangeBetAmount("plus")}
                   className="control-portrait-modal-btn-group__btn _font20"
                 >
                   +

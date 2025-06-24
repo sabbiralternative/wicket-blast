@@ -24,6 +24,42 @@ function App() {
       });
     }
   }, [navigate, disabledDevtool, dispatch]);
+
+  useEffect(() => {
+    const setHtmlFontSize = () => {
+      const width = window.innerWidth;
+
+      // Example logic: scale font size based on width
+      // You can customize these thresholds
+      let fontSize;
+      if (width <= 320) {
+        fontSize = 13;
+      } else if (width <= 375) {
+        fontSize = 15;
+      } else if (width <= 390) {
+        fontSize = 16;
+      } else if (width <= 414) {
+        fontSize = 17;
+      } else if (width <= 600) {
+        fontSize = 18;
+      } else {
+        fontSize = 18;
+      }
+
+      document.documentElement.style.fontSize = `${fontSize}px`;
+    };
+
+    // Initial call
+    setHtmlFontSize();
+
+    // Add resize listener
+    window.addEventListener("resize", setHtmlFontSize);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", setHtmlFontSize);
+    };
+  }, []);
   return <MainLayout />;
 }
 
