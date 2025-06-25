@@ -1,6 +1,3 @@
-import { MdCreditCard } from "react-icons/md";
-import { AiOutlineMenuFold } from "react-icons/ai";
-import { FaMicrophone } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/auth";
 import { useEffect } from "react";
@@ -28,17 +25,17 @@ const Navbar = () => {
             "linear-gradient(rgba(34, 34, 34, 0.5) 0%, rgba(34, 34, 34, 0) 100%)",
         }}
       />
-      <div className="demo--Ig8fs">
+      {/* <div className="demo--Ig8fs">
         <div className="demoIcon--ozzEI" />
         <div>Demo Mode</div>
-      </div>
+      </div> */}
       <div
         data-track="balance"
         className="balance--Kjiqa"
         style={{ position: "fixed", zIndex: 1000, left: "8px", top: "8px" }}
       >
         <div className="balanceTitle--JnSFJ">Balance:</div>
-        <MdCreditCard className="mr-2" />
+        <i className="fm-iconFont fm-iconFont-ios-creditcard"></i>
         <span className="balanceSum--_ab3Z">{balance}</span>
       </div>
       <div
@@ -76,19 +73,19 @@ const Navbar = () => {
         }}
       >
         <div data-track="settings" className="icon--k9yLr">
-          <AiOutlineMenuFold />
+          <i className="fm-iconFont fm-iconFont-ios-nav"></i>
         </div>
         <div className="icon--k9yLr" style={{ marginRight: "8px" }}>
-          <FaMicrophone />
+          <i className="fm-iconFont fm-iconFont-ios-music-on"></i>
         </div>
-        <div
+        {/* <div
           data-track="universe"
           className="icon--k9yLr"
           style={{ marginRight: "8px" }}
         >
           <span className="iconActiveIndicator--CMTO4" />
           <div className="iconTurboUniverse--Of1Ih" />
-        </div>
+        </div> */}
       </div>
     </>
   );

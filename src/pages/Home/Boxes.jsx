@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const Boxes = ({
   boxGrid,
   activeTurbo,
@@ -6,28 +8,32 @@ const Boxes = ({
   setBoxData,
   setIsBetPlaced,
 }) => {
+  const [loadingBoxId, setLoadingBoxId] = useState(null);
   const handleBoxClick = async (box) => {
-    console.log(box);
     if (isBetPlaced) {
-      if (box.mine) {
-        const updatedBoxes = boxData?.map((boxObj) => ({
-          ...boxObj,
-          roundEnd: true,
-          win: boxObj?.mine ? false : true,
-        }));
-        setBoxData(updatedBoxes);
-        setIsBetPlaced(false);
-      } else {
-        const updatedBoxes = boxData?.map((boxObj) =>
-          box?.id === boxObj.id
-            ? {
-                ...boxObj,
-                win: true,
-              }
-            : boxObj
-        );
-        setBoxData(updatedBoxes);
-      }
+      setLoadingBoxId(box.id);
+      setTimeout(() => {
+        setLoadingBoxId(null);
+        if (box.mine) {
+          const updatedBoxes = boxData?.map((boxObj) => ({
+            ...boxObj,
+            roundEnd: true,
+            win: boxObj?.mine ? false : true,
+          }));
+          setBoxData(updatedBoxes);
+          setIsBetPlaced(false);
+        } else {
+          const updatedBoxes = boxData?.map((boxObj) =>
+            box?.id === boxObj.id
+              ? {
+                  ...boxObj,
+                  win: true,
+                }
+              : boxObj
+          );
+          setBoxData(updatedBoxes);
+        }
+      }, 200);
     }
   };
   return (
@@ -35,7 +41,6 @@ const Boxes = ({
       <div className="game__box">
         <div className={`game__grid _${boxGrid}x${boxGrid}`}>
           {boxData.map((box, i) => {
-            console.log(box);
             return (
               <div
                 onClick={() => handleBoxClick(box)}
@@ -44,7 +49,9 @@ const Boxes = ({
                   ${activeTurbo ? "_turbo" : ""} 
                   ${box?.win ? "game-item-win _blue" : " "}
                 ${isBetPlaced ? "" : "_disabled"} 
-                ${box?.mine && box?.roundEnd ? "game-item-lose" : ""} `}
+                ${box?.mine && box?.roundEnd ? "game-item-lose" : ""}  ${
+                  loadingBoxId === box.id ? "_loading" : ""
+                }`}
               >
                 {!box.win && !box?.roundEnd && (
                   <>

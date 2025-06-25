@@ -1,5 +1,4 @@
 import { useRef } from "react";
-import { IoIosClose } from "react-icons/io";
 import useCloseModalClickOutside from "../../hooks/closeModal";
 
 const Settings = ({
@@ -19,6 +18,8 @@ const Settings = ({
   });
 
   const handleDecreaseWicket = (type) => {
+    const maxWicket = boxGrid * boxGrid - 1;
+
     if (type === "minus") {
       if (wicket === 1) {
         return;
@@ -26,7 +27,11 @@ const Settings = ({
         setWicket((prev) => prev - 1);
       }
     } else {
-      setWicket((prev) => prev + 1);
+      if (wicket === maxWicket) {
+        return;
+      } else {
+        setWicket((prev) => prev + 1);
+      }
     }
   };
 
@@ -35,10 +40,10 @@ const Settings = ({
       <div className="control-portrait-modal__inner" ref={ref}>
         <div className="control-portrait-modal__content">
           <div className="control-portrait-modal__close">
-            <IoIosClose
+            <i
               onClick={() => setShowSetting(false)}
-              className="text-white "
-            />
+              className="fm-iconFont fm-iconFont-close"
+            ></i>
           </div>
           <div className="control-portrait-modal__title">Grid</div>
           <div className="control-portrait-modal__box">
@@ -161,7 +166,7 @@ const Settings = ({
               />
             </div>
             <div
-              onClick={() => setBetAmount(0.1)}
+              onClick={() => setBetAmount(10)}
               className="control-portrait-modal-btn"
             >
               <div className="control-portrait-modal-btn__inner">min</div>
@@ -183,7 +188,7 @@ const Settings = ({
               </div>
             </div>
             <div
-              onClick={() => setBetAmount(100)}
+              onClick={() => setBetAmount(10000)}
               className="control-portrait-modal-btn"
             >
               <div className="control-portrait-modal-btn__inner">max</div>

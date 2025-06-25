@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import "./Home.css";
+import "./Font.css";
 import Navbar from "./Navbar";
 import Settings from "./Settings";
-import { LiaTableSolid } from "react-icons/lia";
 import Boxes from "./Boxes";
 import GameHistory from "./GameHistory";
 import { useOrderMutation } from "../../redux/features/events/events";
@@ -24,6 +24,7 @@ const boxes = {
 };
 
 const Home = () => {
+  const [showWinModal, setShowWinModal] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [activeTurbo, setActiveTurbo] = useState(false);
   const [boxGrid, setBoxGrid] = useState(3);
@@ -129,8 +130,19 @@ const Home = () => {
     }));
 
     setBoxData(findBoxAndChange);
-
     setIsBetPlaced(false);
+
+    setTimeout(() => {
+      setShowWinModal(true);
+    }, 100);
+
+    setTimeout(() => {
+      setShowWinModal(false);
+    }, 2000);
+
+    setTimeout(() => {
+      setBoxData(initialBoxData);
+    }, 3000);
   };
 
   return (
@@ -159,15 +171,17 @@ const Home = () => {
                 <div className="header-stat__inner">
                   <div className="header-stat__item">
                     <div className="header-stat__icon">
-                      <LiaTableSolid />
+                      <i className="fm-iconFont fm-iconFont-plates"></i>
                     </div>
-                    <div className="header-stat__value">5x5</div>
+                    <div className="header-stat__value">
+                      {boxGrid}x{boxGrid}
+                    </div>
                   </div>
                   <div className="header-stat__item">
                     <div className="header-stat__icon _font14">
                       <i className="fm-iconFont fm-iconFont-union" />
                     </div>
-                    <div className="header-stat__value">3</div>
+                    <div className="header-stat__value">{wicket}</div>
                   </div>
                 </div>
               </div>
@@ -329,6 +343,20 @@ const Home = () => {
           </div>
         </div>
       </div>
+      {showWinModal && (
+        <div className="win _blue">
+          <div className="win__inner">
+            <div className="win__content">
+              <div className="win__img"></div>
+              <div className="win__amount">{betAmount}</div>
+              <div className="win__amount-shadow">{betAmount}</div>
+              <div className="win__coef">x1.06</div>
+              <div className="win__coef-shadow">x1.06</div>
+              <div className="win__text">Multiplier</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
