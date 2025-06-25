@@ -9523,7 +9523,7 @@ body {
   flex-direction: column;
   gap: 1.25rem;
   padding: 0.8125rem;
-  padding-top: 3.125rem;
+  padding-top: 5rem;
   position: relative;
 }
 @media screen and (min-height: 780px) and (orientation: portrait) {
@@ -9544,7 +9544,7 @@ body {
 }
 @media screen and (min-width: 0px) and (orientation: landscape) {
   .game {
-    padding-top: 0.8125rem;
+    /* padding-top: 0.8125rem; */
   }
   .game::before {
     content: "";
@@ -9580,9 +9580,9 @@ body {
 }
 @media screen and (min-width: 0px) and (orientation: landscape) {
   .game__box {
-    width: 22.5rem;
+    /* width: 22.5rem;
     height: 22.5rem;
-    margin-bottom: 4.0625rem;
+    margin-bottom: 4.0625rem; */
   }
 }
 .game__grid {
@@ -11488,7 +11488,7 @@ body {
   width: 16.25rem;
   height: 15rem;
   top: -4.375rem;
-  background-image: url(https://wicketblast.turbozest.online/cf5bc38b133371aa39ab.webp);
+  background-image: url(/cf5bc38b133371aa39ab.webp);
   background-size: contain;
   animation: scale 0.4s cubic-bezier(0.175, 0.885, 0.35, 1.75) -0.1s;
 }

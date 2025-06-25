@@ -36,6 +36,7 @@ const Home = () => {
   const [wicket, setWicket] = useState(wicketData?.[boxGrid]?.[0]);
   const [betAmount, setBetAmount] = useState(100);
   const [deviceWidth, setDeviceWidth] = useState(window.innerWidth);
+  const [isDesktop, setIsDesktop] = useState(false);
   const initialBoxData = Array.from({ length: boxes[boxGrid] }, (_, i) => ({
     name: `box${i + 1}`,
     id: i + 1,
@@ -96,7 +97,14 @@ const Home = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      setDeviceWidth(window.innerWidth);
+      if (window.innerWidth > 1000) {
+        console.log(window.innerWidth);
+        setDeviceWidth(400);
+        setIsDesktop(true);
+      } else {
+        setDeviceWidth(window.innerWidth);
+        setIsDesktop(false);
+      }
     };
 
     handleResize();
@@ -142,10 +150,7 @@ const Home = () => {
 
     setBoxData(findBoxAndChange);
     setIsBetPlaced(false);
-
-    setTimeout(() => {
-      setShowWinModal(true);
-    }, 100);
+    setShowWinModal(true);
 
     setTimeout(() => {
       setShowWinModal(false);
@@ -153,11 +158,18 @@ const Home = () => {
 
     setTimeout(() => {
       setBoxData(initialBoxData);
-    }, 3000);
+    }, 2500);
   };
 
   return (
-    <div id="app">
+    <div
+      id="app"
+      style={{
+        width: isDesktop ? "420px" : "100%",
+        margin: "0 auto",
+        overflow: "hidden",
+      }}
+    >
       {showSetting && (
         <Settings
           handleChangeBetAmount={handleChangeBetAmount}
@@ -171,12 +183,12 @@ const Home = () => {
           setShowSetting={setShowSetting}
         />
       )}
-      <Navbar />
+      <Navbar isDesktop={isDesktop} />
       <div id="observeElementTree" className="wrap">
         <div className="bg" />
         <div className="inner" style={{ width: `${deviceWidth}px` }}>
           <div className="header">
-            <div className="header__logo" />
+            {/* <div className="header__logo" /> */}
             <div className="header__history">
               <div className="header-stat">
                 <div className="header-stat__inner">

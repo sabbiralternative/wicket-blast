@@ -42,8 +42,10 @@ function App() {
         fontSize = 17;
       } else if (width <= 600) {
         fontSize = 18;
-      } else {
+      } else if (width <= 1000) {
         fontSize = 18;
+      } else {
+        fontSize = 16;
       }
 
       document.documentElement.style.fontSize = `${fontSize}px`;
