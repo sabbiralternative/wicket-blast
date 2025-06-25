@@ -1,7 +1,9 @@
 import { useSelector } from "react-redux";
 import { useAuth } from "../../hooks/auth";
 import { useEffect } from "react";
+import { useSound } from "../../context/ApiProvider";
 const Navbar = () => {
+  const { sound, setSound } = useSound();
   const { token, balance } = useSelector((state) => state.auth);
   const { mutate: handleAuth } = useAuth();
 
@@ -10,6 +12,16 @@ const Navbar = () => {
       handleAuth();
     }
   }, [token, handleAuth]);
+
+  const handleSoundToggle = () => {
+    if (sound) {
+      sessionStorage.removeItem("sound");
+      setSound(false);
+    } else {
+      sessionStorage.setItem("sound", true);
+      setSound(true);
+    }
+  };
   return (
     <>
       <div
@@ -75,8 +87,16 @@ const Navbar = () => {
         <div data-track="settings" className="icon--k9yLr">
           <i className="fm-iconFont fm-iconFont-ios-nav"></i>
         </div>
-        <div className="icon--k9yLr" style={{ marginRight: "8px" }}>
-          <i className="fm-iconFont fm-iconFont-ios-music-on"></i>
+        <div
+          onClick={handleSoundToggle}
+          className="icon--k9yLr"
+          style={{ marginRight: "8px" }}
+        >
+          {sound ? (
+            <i className="fm-iconFont fm-iconFont-ios-music-off"></i>
+          ) : (
+            <i className="fm-iconFont fm-iconFont-ios-music-on"></i>
+          )}
         </div>
         {/* <div
           data-track="universe"

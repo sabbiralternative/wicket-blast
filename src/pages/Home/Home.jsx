@@ -8,6 +8,8 @@ import GameHistory from "./GameHistory";
 import { useOrderMutation } from "../../redux/features/events/events";
 import { generateRoundId } from "../../utils/generateRoundId";
 import toast from "react-hot-toast";
+import { useSound } from "../../context/ApiProvider";
+import { playCashOutSound } from "../../utils/sound";
 
 const wicketData = {
   3: [2, 3, 5, 7],
@@ -24,6 +26,7 @@ const boxes = {
 };
 
 const Home = () => {
+  const { sound } = useSound();
   const [showWinModal, setShowWinModal] = useState(false);
   const [showSetting, setShowSetting] = useState(false);
   const [activeTurbo, setActiveTurbo] = useState(false);
@@ -37,6 +40,7 @@ const Home = () => {
     name: `box${i + 1}`,
     id: i + 1,
     mine: (i + 1) % boxGrid === 0,
+    showBox: true,
     win: false,
     roundEnd: false,
   }));
@@ -123,10 +127,14 @@ const Home = () => {
   };
 
   const handleCashOut = async () => {
+    if (sound) {
+      playCashOutSound();
+    }
     const findBoxAndChange = boxData?.map((boxObj) => ({
       ...boxObj,
-      win: boxObj?.mine ? false : true,
+      win: boxObj?.mine ? false : boxObj.win,
       roundEnd: true,
+      showBox: boxObj.mine ? false : boxObj.win ? false : true,
     }));
 
     setBoxData(findBoxAndChange);

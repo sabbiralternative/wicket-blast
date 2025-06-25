@@ -11870,7 +11870,7 @@ body {
   content: "";
   width: 100%;
   height: 100%;
-  background-image: url(https://wicketblast.turbozest.online/51a1934de71b353c4f47.webp);
+  background-image: url(/51a1934de71b353c4f47.webp);
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -11921,13 +11921,13 @@ body {
   }
 }
 .game-item-win._green::before {
-  background-image: url(https://wicketblast.turbozest.online/302f10b97806d6560177.webp);
+  background-image: url(/302f10b97806d6560177.webp);
 }
 .game-item-win._blue::before {
-  background-image: url(https://wicketblast.turbozest.online/211300155bb679991378.webp);
+  background-image: url(/211300155bb679991378.webp);
 }
 .game-item-win._orange::before {
-  background-image: url(https://wicketblast.turbozest.online/713edfb76b11fd36f628.webp);
+  background-image: url(/713edfb76b11fd36f628.webp);
 }
 
 .demo--Ig8fs {
