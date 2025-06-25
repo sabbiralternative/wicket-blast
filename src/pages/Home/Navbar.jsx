@@ -15,10 +15,10 @@ const Navbar = () => {
 
   const handleSoundToggle = () => {
     if (sound) {
-      sessionStorage.removeItem("sound");
+      sessionStorage.setItem("sound", false);
       setSound(false);
     } else {
-      sessionStorage.setItem("sound", true);
+      sessionStorage.removeItem("sound");
       setSound(true);
     }
   };
@@ -93,9 +93,9 @@ const Navbar = () => {
           style={{ marginRight: "8px" }}
         >
           {sound ? (
-            <i className="fm-iconFont fm-iconFont-ios-music-off"></i>
-          ) : (
             <i className="fm-iconFont fm-iconFont-ios-music-on"></i>
+          ) : (
+            <i className="fm-iconFont fm-iconFont-ios-music-off"></i>
           )}
         </div>
         {/* <div

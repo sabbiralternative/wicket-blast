@@ -9,7 +9,7 @@ import { useOrderMutation } from "../../redux/features/events/events";
 import { generateRoundId } from "../../utils/generateRoundId";
 import toast from "react-hot-toast";
 import { useSound } from "../../context/ApiProvider";
-import { playCashOutSound } from "../../utils/sound";
+import { playBetSound, playCashOutSound } from "../../utils/sound";
 
 const wicketData = {
   3: [2, 3, 5, 7],
@@ -49,6 +49,9 @@ const Home = () => {
 
   const handlePlaceBet = async () => {
     if (betAmount) {
+      if (sound) {
+        playBetSound();
+      }
       const round_id = generateRoundId();
       sessionStorage.removeItem("round_id");
       sessionStorage.setItem("round_id", round_id);

@@ -8,7 +8,7 @@ export const ApiContext = createContext(null);
 
 const ApiProvider = ({ children }) => {
   const storedSound = sessionStorage.getItem("sound");
-  const [sound, setSound] = useState(storedSound ? true : false);
+  const [sound, setSound] = useState(storedSound ? false : true);
   const [noticeLoaded, setNoticeLoaded] = useState(false);
   const [logo, setLogo] = useState("");
   const baseUrl = notice?.result?.Settings?.baseUrl;
